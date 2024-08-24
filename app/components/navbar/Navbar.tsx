@@ -14,7 +14,7 @@ import Image from "next/image"
 
 const navItems = [
   { href: "/participant/available", label: "Participate" },
-  { href: "/create", label: "Create Survey" },
+  { href: "/researcher/dashboard", label: "My Surveys" },
 ]
 
 export default function Navbar() {
