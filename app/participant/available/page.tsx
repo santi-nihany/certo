@@ -13,7 +13,7 @@ import { CheckCircleIcon, XCircleIcon } from "lucide-react"
 import Filters from "@/app/components/participant/Filters"
 import SurveyTag from "@/app/components/participant/SurveyTag"
 import { IBM_Plex_Mono } from "next/font/google"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 const ibm = IBM_Plex_Mono({
   weight: ["100", "200", "300", "400", "700"],
@@ -65,7 +65,8 @@ export default function Home() {
   const [modalOpen, setModalOpen] = useState(false)
   const [currentSurvey, setCurrentSurvey] = useState<typeof surveys[0] | null>(null)
   const [isEligible, setIsEligible] = useState(false)
-  const router = useRouter();
+
+  const router = useRouter()
   
   const toggleFilter = (filter: string) => {
     setFilters(prev => 
@@ -88,9 +89,10 @@ export default function Home() {
   }
 
   const participateInSurvey = () => {
-    router.push(`/participant/available/${currentSurvey.id}`)
-    setModalOpen(false)
+    router.push(`/participant/available/${currentSurvey?.id}`);
+    setModalOpen(false);
   }
+
 
   return (
     <main className={`${ibm.className} container mx-auto p-4`}>
