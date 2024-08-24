@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import Image from "next/image";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquarePollVertical, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -24,14 +22,7 @@ LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - 
         Researcher
         </button>
     </div>
-
-
     </div>
-    
-    
     </div>
-
-
   );
 }
->>>>>>> Stashed changes
