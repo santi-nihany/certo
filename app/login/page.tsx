@@ -7,7 +7,7 @@ export default function Login() {
     <div className="bg-[url(/bg-black-image.png)] flex items-center h-screen w-screen flex-col ">
     
     <div className="bg-primary text-black items-center text-center whitespace-nowrap w-screen">
-LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LO</div>
+LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN </div>
 <div className="flex flex-col justify-center items-center h-screen">   
     <h1 className=" text-2xl md:text-3xl text-white mt-10">Which is your role here?</h1>
     
@@ -22,13 +22,7 @@ LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - LOGIN - 
         Researcher
         </button>
     </div>
-
-
     </div>
-    
-    
     </div>
-
-
   );
 }

@@ -9,10 +9,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { pushSurvey, Survey, Question } from '@/api/api'
 
 type QuestionType = 'multipleChoice' | 'checkbox'
 
-interface Question {
+interface LocalQuestion {
   text: string
   type: QuestionType
   options: string[]
@@ -35,9 +36,10 @@ export default function CreateSurvey() {
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [questions, setQuestions] = useState<Question[]>([
+  const [questions, setQuestions] = useState<LocalQuestion[]>([
     { text: '', type: 'multipleChoice', options: [''] }
   ])
+  const [segmentations, setSegmentations] = useState<string[]>([''])
   const [parameters, setParameters] = useState<SurveyParameters>({
     participantQuota: {
       enabled: false,
@@ -59,7 +61,7 @@ export default function CreateSurvey() {
     setQuestions(questions.filter((_, i) => i !== index))
   }
 
-  const updateQuestion = (index: number, field: keyof Question, value: string) => {
+  const updateQuestion = (index: number, field: keyof LocalQuestion, value: string) => {
     const updatedQuestions = [...questions]
     if (field === 'type') {
       updatedQuestions[index] = { 
@@ -97,26 +99,60 @@ export default function CreateSurvey() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const updateSegmentation = (index: number, value: string) => {
+    const updatedSegmentations = [...segmentations]
+    updatedSegmentations[index] = value
+    setSegmentations(updatedSegmentations)
+  }
+
+  const addSegmentation = () => {
+    setSegmentations([...segmentations, ''])
+  }
+
+  const removeSegmentation = (index: number) => {
+    setSegmentations(segmentations.filter((_, i) => i !== index))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Retrieve existing surveys from localStorage
-    const existingSurveys = JSON.parse(localStorage.getItem('surveys') || '[]')
+    // Construct the requirements array dynamically
+    const requirements = []
+    if (parameters.worldId === 'required') requirements.push('World ID')
+    if (parameters.quarkId === 'required') requirements.push('Quark ID')
 
-    // Add new survey
-    const newSurvey = {
-        id: Date.now().toString(),
-        title,
+    // Convert local questions to backend-compatible questions
+    const backendQuestions: Question[] = questions.map((q, index) => ({
+      index,
+      question: q.text,
+      options: q.options,
+      multiple: q.type === 'checkbox'
+    }))
+
+    // Construct the new survey object
+    const newSurvey: Survey = {
+        name: title,
         description,
-        questions,
-        parameters,
-        createdAt: new Date().toISOString(),
+        owner: 'owner-id',  // Replace with actual owner ID
+        prize: parameters.participantQuota.reward.enabled ? parseFloat(parameters.participantQuota.reward.amount) : 0,
+        timeLimit: new Date(),  // Set this if you have a specific time limit in mind
+        maxAmount: parseInt(parameters.participantQuota.quota) || 0,
+        minAmount: 0,  // Set this if applicable
+        questions: backendQuestions,
+        requirements, 
+        created_at: new Date(),
+        segmentation: segmentations // Add the segmentations
     }
 
-    localStorage.setItem('surveys', JSON.stringify([...existingSurveys, newSurvey]))
+    try {
+      // Push the survey to the backend
+      await pushSurvey(newSurvey)
 
-    // Redirect to dashboard
-    router.push('/researcher/dashboard')
+      // Redirect to dashboard
+      router.push('/researcher/dashboard')
+    } catch (error) {
+      console.error('Failed to create survey:', error)
+    }
   }
 
   return (
@@ -225,6 +261,31 @@ export default function CreateSurvey() {
                 </Select>
               </div>
             </div>
+          </div>
+          <div className="space-y-4">
+            <Label>Participants Segmentations</Label>
+            {segmentations.map((segmentation, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <Input
+                  value={segmentation}
+                  onChange={(e) => updateSegmentation(index, e.target.value)}
+                  placeholder={`Segmentation ${index + 1}`}
+                  className="w-full"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => removeSegmentation(index)}
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button type="button" onClick={addSegmentation} variant="outline" className="w-full">
+              <PlusIcon className="h-4 w-4 mr-2" />
+              Add Another Segmentation
+            </Button>
           </div>
           <div className="space-y-4">
             <Label>Questions</Label>
