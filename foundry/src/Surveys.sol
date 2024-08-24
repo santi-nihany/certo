@@ -45,6 +45,12 @@ contract Surveys is ReentrancyGuard {
     /// @notice Thrown when a user is not the creator of the survey
     error NotCreator();
 
+    /// @notice Thrown when the proof of human is invalid
+    error InvalidProofOfHuman();
+
+    /// @notice Thrown when the proof of data is invalid
+    error InvalidProofOfData();
+
     //////////////
     // Events ////
     //////////////
@@ -70,12 +76,14 @@ contract Surveys is ReentrancyGuard {
     /// @param responder The address of the responder
     /// @param proofOfHuman A unique proof provided by the responder
     /// @param proofOfData A unique proof for the data provided in the response
+    /// @param dataHash The hashed version of the survey answer
     /// @param ipfsCID The IPFS CID where the response data is stored
     event SurveyResponse(
         uint256 indexed surveyId,
         address indexed responder,
-        bytes32 indexed proofOfHuman,
+        bytes32 proofOfHuman,
         bytes32 proofOfData,
+        bytes32 dataHash,
         bytes32 ipfsCID
     );
 
@@ -195,7 +203,7 @@ contract Surveys is ReentrancyGuard {
     /// @param _totalPrize The total prize amount in USD (will be converted to USDC)
     /// @param _minResponses The minimum number of responses required for the survey
     /// @param _maxResponses The maximum number of responses allowed for the survey
-    /// @param _expirationTime The timestamp when the survey will expire
+    /// @param _expirationTime The timestamp when the survey will expire (in seconds since epoch)
     function createSurvey(uint256 _totalPrize, uint256 _minResponses, uint256 _maxResponses, uint256 _expirationTime)
         external
         moreThanZero(_totalPrize)
@@ -220,11 +228,11 @@ contract Surveys is ReentrancyGuard {
 
     /// @notice Submits a response to a survey
     /// @dev Verifies the proof of human and proof of data, then records the response
+    /// @param surveyId The ID of the survey being responded to
     /// @param _proofOfHuman A unique proof provided by the responder
     /// @param _proofOfData A unique proof for the data provided in the response
     /// @param ipfsCID The IPFS CID where the response data is stored
-    /// @param surveyId The ID of the survey being responded to
-    function submitSurveyResponse(bytes32 _proofOfHuman, bytes32 _proofOfData, bytes32 ipfsCID, uint256 surveyId)
+    function submitSurveyResponse(uint256 surveyId, bytes32 _proofOfHuman, bytes32 _proofOfData, bytes32 _dataHash, bytes32 ipfsCID)
         external
         surveyIsActive(surveyId)
         hasNotResponded(surveyId, _proofOfHuman)
@@ -232,11 +240,15 @@ contract Surveys is ReentrancyGuard {
         bytesProvided(_proofOfData)
         bytesProvided(ipfsCID)
     {
-        // Verify proof of human
-        // Verify proof of data
+        if (!_verifyHuman(_proofOfHuman)) {
+            revert InvalidProofOfHuman()
+        }
+        if (!_verifyData(_proofOfData, _dataHash)) {
+            revert InvalidProofOfData()
+        }
         s_surveys[surveyId].totalResponses++;
         s_surveyResponders[surveyId][_proofOfHuman] = msg.sender;
-        emit SurveyResponse(surveyId, msg.sender, _proofOfHuman, _proofOfData, ipfsCID);
+        emit SurveyResponse(surveyId, msg.sender, _proofOfHuman, _proofOfData, _dataHash, ipfsCID);
     }
 
     /// @notice Withdraws the responder's share of the prize from a finalized survey
@@ -299,5 +311,15 @@ contract Surveys is ReentrancyGuard {
             return State.Finalized;
         }
         return State.Active;
+    }
+
+    function _verifyHuman(bytes32 _proofOfHuman) internal returns (bool) {
+        // TODO implement
+        return true
+    }
+
+    function _verifyData(bytes32 _proofOfData) internal returns (bool) {
+        // TODO implement
+        return true
     }
 }
