@@ -18,6 +18,7 @@ export type Survey = {
   minAmount: number
   questions: Question[]
   requirements: string[]
+  segmentation: string[]
   created_at?: Date
 }
 

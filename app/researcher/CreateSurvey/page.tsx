@@ -39,6 +39,7 @@ export default function CreateSurvey() {
   const [questions, setQuestions] = useState<LocalQuestion[]>([
     { text: '', type: 'multipleChoice', options: [''] }
   ])
+  const [segmentations, setSegmentations] = useState<string[]>([''])
   const [parameters, setParameters] = useState<SurveyParameters>({
     participantQuota: {
       enabled: false,
@@ -98,6 +99,20 @@ export default function CreateSurvey() {
     }))
   }
 
+  const updateSegmentation = (index: number, value: string) => {
+    const updatedSegmentations = [...segmentations]
+    updatedSegmentations[index] = value
+    setSegmentations(updatedSegmentations)
+  }
+
+  const addSegmentation = () => {
+    setSegmentations([...segmentations, ''])
+  }
+
+  const removeSegmentation = (index: number) => {
+    setSegmentations(segmentations.filter((_, i) => i !== index))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -125,7 +140,8 @@ export default function CreateSurvey() {
         minAmount: 0,  // Set this if applicable
         questions: backendQuestions,
         requirements, 
-        created_at: new Date()
+        created_at: new Date(),
+        segmentation: segmentations // Add the segmentations
     }
 
     try {
@@ -245,6 +261,31 @@ export default function CreateSurvey() {
                 </Select>
               </div>
             </div>
+          </div>
+          <div className="space-y-4">
+            <Label>Participants Segmentations</Label>
+            {segmentations.map((segmentation, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <Input
+                  value={segmentation}
+                  onChange={(e) => updateSegmentation(index, e.target.value)}
+                  placeholder={`Segmentation ${index + 1}`}
+                  className="w-full"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => removeSegmentation(index)}
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button type="button" onClick={addSegmentation} variant="outline" className="w-full">
+              <PlusIcon className="h-4 w-4 mr-2" />
+              Add Another Segmentation
+            </Button>
           </div>
           <div className="space-y-4">
             <Label>Questions</Label>
