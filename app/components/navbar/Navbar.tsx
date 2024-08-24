@@ -39,7 +39,9 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
-          <Button className="border-2 border-primary bg-transparent hover:bg-none">World Coin</Button>
+          <Button className="border-2 border-primary bg-transparent hover:bg-none">
+            <Link href={`/login`}>Log in</Link>
+          </Button>
         </nav>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild className="md:hidden">
