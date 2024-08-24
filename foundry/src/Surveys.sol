@@ -216,9 +216,9 @@ contract Surveys is ReentrancyGuard {
             revert NeedsGreaterTimeStamp();
         }
         s_surveyCounter++;
+        uint256 usdcAmount = getTokenAmountFromUsd(_totalPrize);
         s_surveys[s_surveyCounter] =
-            Survey(msg.sender, block.timestamp, _expirationTime, _totalPrize, _minResponses, _maxResponses, 0);
-        uint256 usdcAmount = _getTokenAmountFromUsd(_totalPrize * PRECISION);
+            Survey(msg.sender, block.timestamp, _expirationTime, usdcAmount, _minResponses, _maxResponses, 0);
         bool success = IERC20(s_usdcToken).transferFrom(msg.sender, address(this), usdcAmount);
         if (!success) {
             revert TransferFailed();
@@ -266,14 +266,16 @@ contract Surveys is ReentrancyGuard {
         surveyIsFinalized(_surveyId)
         isResponder(_surveyId, _proofOfHuman)
         nonReentrant
+        returns (uint256, uint256)
     {
         // Divide the total prize by the number of responders
         uint256 prize = s_surveys[_surveyId].totalPrize / s_surveys[_surveyId].totalResponses;
         // Transfer the amount to the responder
-        bool success = IERC20(s_usdcToken).transfer(msg.sender, prize);
-        if (!success) {
-            revert TransferFailed();
-        }
+        // bool success = IERC20(s_usdcToken).transfer(msg.sender, prize);
+        // if (!success) {
+        //     revert TransferFailed();
+        // }
+        return (prize, IERC20(s_usdcToken).balanceOf(address(this)));
     }
 
     /// @notice Allows the survey creator to reclaim the prize if the survey is reverted
@@ -293,7 +295,7 @@ contract Surveys is ReentrancyGuard {
     /// @dev Uses Chainlink price feeds to get the current USD/USDC exchange rate
     /// @param usdAmountInWei The amount in USD (in Wei) to convert
     /// @return The equivalent amount in USDC
-    function _getTokenAmountFromUsd(uint256 usdAmountInWei) internal view returns (uint256) {
+    function getTokenAmountFromUsd(uint256 usdAmountInWei) public view returns (uint256) {
         AggregatorV3Interface priceFeed = AggregatorV3Interface(s_usdcPriceFeed);
         (, int256 price,,,) = priceFeed.latestRoundData();
         // $100e18 USD
