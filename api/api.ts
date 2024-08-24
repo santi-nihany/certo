@@ -22,8 +22,6 @@ export type Survey = {
   created_at?: Date
 }
 
-
-//
 // worldID -> index 0 -> Required/Optional
 // QuarkID -> index 1 -> Required/Optional
 // Quota -> index 2 -> Nan or number
@@ -41,7 +39,10 @@ export type Question = {
 export type Answer = {
   id?: UUID
   survey_id: UUID
-  data: { index: number, answers: string[] }[]
+  data: {index: number, answers: string[]}[]
+
+  // For a survey with 2 questions, where the first one is a multiple choice, and the second one is a checkbox.
+  // Data = {[0, ['Very Satisfied']],[1, ['Design', ['Performance]]]}
 }
 
 export const getAllSurveys = async (): Promise<Survey[]> => {

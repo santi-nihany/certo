@@ -36,10 +36,8 @@ export default function CreateSurvey() {
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [questions, setQuestions] = useState<LocalQuestion[]>([
-    { text: '', type: 'multipleChoice', options: [''] }
-  ])
-  const [segmentations, setSegmentations] = useState<string[]>([''])
+  const [questions, setQuestions] = useState<LocalQuestion[]>([]) // Start with an empty array
+  const [segmentations, setSegmentations] = useState<string[]>([]) // Start with an empty array
   const [parameters, setParameters] = useState<SurveyParameters>({
     participantQuota: {
       enabled: false,
@@ -284,7 +282,7 @@ export default function CreateSurvey() {
             ))}
             <Button type="button" onClick={addSegmentation} variant="outline" className="w-full">
               <PlusIcon className="h-4 w-4 mr-2" />
-              Add Another Segmentation
+              Add Segmentation
             </Button>
           </div>
           <div className="space-y-4">

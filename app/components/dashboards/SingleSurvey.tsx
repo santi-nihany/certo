@@ -3,46 +3,38 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
+import { pushAnswer, Answer } from '@/api/api'
 
-// Mock survey data
-const surveyData = {
-  id: "001",
-  title: "Customer Satisfaction Survey",
-  description: "Help us improve our services by providing your feedback.",
-  questions: [
-    {
-      id: "q1",
-      type: "radio",
-      question: "How satisfied are you with our product?",
-      options: ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very Dissatisfied"]
-    },
-    {
-      id: "q2",
-      type: "checkbox",
-      question: "Which features do you use most? (Select all that apply)",
-      options: ["Feature A", "Feature B", "Feature C", "Feature D"]
-    },
-  ]
-}
-
-export default function SingleSurvey({survey}) {
-  const [responses, setResponses] = useState<Record<string, string | string[]>>({})
+export default function SingleSurvey({ survey }) {
+  const [responses, setResponses] = useState<{ [key: string]: string | string[] }>({})
   const [submitted, setSubmitted] = useState(false)
 
-
-  const handleInputChange = (questionId: string, value: string | string[]) => {
-    setResponses(prev => ({ ...prev, [questionId]: value }))
+  const handleInputChange = (questionIndex: number, value: string | string[]) => {
+    setResponses(prev => ({ ...prev, [questionIndex]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Survey responses:", responses)
-    setSubmitted(true)
+
+    // Map responses to the correct structure for the database
+    const answerData: Answer = {
+      survey_id: survey.id,
+      data: Object.entries(responses).map(([index, answers]) => ({
+        index: parseInt(index),
+        answers: Array.isArray(answers) ? answers : [answers]
+      }))
+    }
+
+    try {
+      // Push the answer data to the backend
+      await pushAnswer(answerData)
+      setSubmitted(true)
+    } catch (error) {
+      console.error('Failed to submit survey answers:', error)
+    }
   }
 
   if (submitted) {
@@ -60,24 +52,24 @@ export default function SingleSurvey({survey}) {
     <form className="mt-8" onSubmit={handleSubmit}>
       <Card className="w-full max-w-3xl mx-auto">
         <CardHeader>
-          <CardTitle> {survey.name}</CardTitle>
-          <CardDescription>{surveyData.description}</CardDescription>
+          <CardTitle>{survey.name}</CardTitle>
+          <CardDescription>{survey.description}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {survey.questions.map((question) => (
-            <div key={question.id} className="space-y-2">
-              <Label htmlFor={question.id} className="text-base font-medium">
+          {survey.questions.map((question, index) => (
+            <div key={index} className="space-y-2">
+              <Label htmlFor={index.toString()} className="text-base font-medium">
                 {question.question}
               </Label>
-              {!question.multiple  && (
+              {!question.multiple && (
                 <RadioGroup
-                  onValueChange={(value) => handleInputChange(question.id, value)}
+                  onValueChange={(value) => handleInputChange(index, value)}
                   className="flex flex-col space-y-1"
                 >
                   {question.options?.map((option) => (
                     <div key={option} className="flex items-center space-x-2">
-                      <RadioGroupItem value={option} id={`${question.id}-${option}`} />
-                      <Label htmlFor={`${question.id}-${option}`}>{option}</Label>
+                      <RadioGroupItem value={option} id={`${index}-${option}`} />
+                      <Label htmlFor={`${index}-${option}`}>{option}</Label>
                     </div>
                   ))}
                 </RadioGroup>
@@ -87,25 +79,21 @@ export default function SingleSurvey({survey}) {
                   {question.options?.map((option) => (
                     <div key={option} className="flex items-center space-x-2">
                       <Checkbox
-                        id={`${question.id}-${option}`}
+                        id={`${index}-${option}`}
                         onCheckedChange={(checked) => {
-                          const currentResponses = responses[question.id] as string[] || []
+                          const currentResponses = (responses[index] as string[]) || []
                           if (checked) {
-                            handleInputChange(question.id, [...currentResponses, option])
+                            handleInputChange(index, [...currentResponses, option])
                           } else {
-                            handleInputChange(
-                              question.id,
-                              currentResponses.filter((item) => item !== option)
-                            )
+                            handleInputChange(index, currentResponses.filter((item) => item !== option))
                           }
                         }}
                       />
-                      <Label htmlFor={`${question.id}-${option}`}>{option}</Label>
+                      <Label htmlFor={`${index}-${option}`}>{option}</Label>
                     </div>
                   ))}
                 </div>
               )}
-              
             </div>
           ))}
         </CardContent>
