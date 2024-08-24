@@ -22,22 +22,22 @@ export default function SurveyTag({ survey, checkEligibilityAndParticipate}: Sur
     return (
         <Card key={survey.id} className="flex flex-col border-primary border-4">
             <CardHeader>
-              <CardTitle>{survey.title}</CardTitle>
+              <CardTitle>{survey.name}</CardTitle>
               <CardDescription>{survey.description}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
               <h3 className="font-semibold mb-2">Requisites:</h3>
               <ul className="list-disc list-inside mb-4">
-                {survey.requisites.map((requisite, index) => (
+                {survey.segmentation?.map((requisite, index) => (
                   <li key={index} className="text-sm text-gray-600">{requisite}</li>
                 ))}
               </ul>
               <div className="flex items-center justify-between">
                 <Badge variant="secondary" className="flex items-center gap-1">
                   <DollarSignIcon className="w-4 h-4" />
-                  {survey.reward.toFixed(2)}
+                  {/* {survey.reward.toFixed(2)} */}
                 </Badge>
-                {survey.requiresWorldcoinId && (
+                {(survey.requirements.includes("World Coin")) && (
                   <Badge variant="outline" className="bg-blue-50">Worldcoin ID</Badge>
                 )}
               </div>

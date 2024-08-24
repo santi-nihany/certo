@@ -45,8 +45,9 @@ export const getSurvey = async (id: UUID): Promise<Survey> => {
   const { data, error } = await supabase
     .from('surveys')
     .select()
-    .eq('surveys.id', id.toString())
+    .eq('id', id.toString())
   if (error) throw Error(error.message)
+    console.log(data)
   return data[0] as Survey
 }
 

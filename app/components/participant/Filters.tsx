@@ -16,7 +16,7 @@ interface FiltersProps {
 
 export default function Filters ({showWorldcoinOnly, setShowWorldcoinOnly, filters, toggleFilter, allRequisites}: FiltersProps) {
     return (
-        <div className="mb-6 p-4 border rounded-lg bg-gray-50">
+        <div className="mb-6 p-4 border rounded-lg bg-light text-dark">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold flex items-center">
                         <FilterIcon className="mr-2" /> Filters
