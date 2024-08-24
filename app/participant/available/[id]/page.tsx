@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
+import { getAllSurveys } from "@/api/api"
 
 // Mock survey data
 const surveyData = {
@@ -34,6 +35,7 @@ export default function SurveyComponent({params}) {
   const [responses, setResponses] = useState<Record<string, string | string[]>>({})
   const [submitted, setSubmitted] = useState(false)
   const {id} = params
+  const surveyData = getAllSurveys()
 
   const handleInputChange = (questionId: string, value: string | string[]) => {
     setResponses(prev => ({ ...prev, [questionId]: value }))
