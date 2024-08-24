@@ -1,11 +1,6 @@
 "use client"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
 import {
   Dialog,
   DialogContent,
@@ -14,7 +9,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { DollarSignIcon, FilterIcon, CheckCircleIcon, XCircleIcon } from "lucide-react"
+import { CheckCircleIcon, XCircleIcon } from "lucide-react"
+import Filters from "@/app/components/participant/Filters"
+import SurveyTag from "@/app/components/participant/SurveyTag"
+import { IBM_Plex_Mono } from "next/font/google"
+
+const ibm = IBM_Plex_Mono({
+  weight: ["100", "200", "300", "400", "700"],
+  subsets: ["latin"],
+})
 
 // Mock data for surveys
 const surveys = [
@@ -88,75 +91,12 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Survey Hub</h1>
-      
-      <div className="mb-6 p-4 border rounded-lg bg-gray-50">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold flex items-center">
-            <FilterIcon className="mr-2" /> Filters
-          </h2>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="worldcoin-mode"
-              checked={showWorldcoinOnly}
-              onCheckedChange={setShowWorldcoinOnly}
-            />
-            <Label htmlFor="worldcoin-mode">Worldcoin ID required</Label>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-          {allRequisites.map((requisite) => (
-            <div key={requisite} className="flex items-center space-x-2">
-              <Checkbox
-                id={requisite}
-                checked={filters.includes(requisite)}
-                onCheckedChange={() => toggleFilter(requisite)}
-              />
-              <label
-                htmlFor={requisite}
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                {requisite}
-              </label>
-            </div>
-          ))}
-        </div>
-      </div>
-
+    <main className={`${ibm.className} container mx-auto p-4`}>
+      <h1 className="text-3xl font-bold mb-6 text-center text-light uppercase">Survey Hub</h1>
+      <Filters showWorldcoinOnly={showWorldcoinOnly} setShowWorldcoinOnly={setShowWorldcoinOnly} filters={filters} toggleFilter={toggleFilter} allRequisites={allRequisites} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredSurveys.map((survey) => (
-          <Card key={survey.id} className="flex flex-col">
-            <CardHeader>
-              <CardTitle>{survey.title}</CardTitle>
-              <CardDescription>{survey.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-grow">
-              <h3 className="font-semibold mb-2">Requisites:</h3>
-              <ul className="list-disc list-inside mb-4">
-                {survey.requisites.map((requisite, index) => (
-                  <li key={index} className="text-sm text-gray-600">{requisite}</li>
-                ))}
-              </ul>
-              <div className="flex items-center justify-between">
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  <DollarSignIcon className="w-4 h-4" />
-                  {survey.reward.toFixed(2)}
-                </Badge>
-                {survey.requiresWorldcoinId && (
-                  <Badge variant="outline" className="bg-blue-50">Worldcoin ID</Badge>
-                )}
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button 
-                className="w-full" 
-                onClick={() => checkEligibilityAndParticipate(survey)}
-              >
-                Check Eligibility & Participate
-              </Button>
-            </CardFooter>
-          </Card>
+          <SurveyTag key={survey.id} survey={survey} checkEligibilityAndParticipate={checkEligibilityAndParticipate} />
         ))}
       </div>
 
@@ -192,6 +132,6 @@ export default function Home() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </main>
   )
 }
