@@ -13,6 +13,7 @@ import { CheckCircleIcon, XCircleIcon } from "lucide-react"
 import Filters from "@/app/components/participant/Filters"
 import SurveyTag from "@/app/components/participant/SurveyTag"
 import { IBM_Plex_Mono } from "next/font/google"
+import { useRouter } from "next/router"
 
 const ibm = IBM_Plex_Mono({
   weight: ["100", "200", "300", "400", "700"],
@@ -64,7 +65,8 @@ export default function Home() {
   const [modalOpen, setModalOpen] = useState(false)
   const [currentSurvey, setCurrentSurvey] = useState<typeof surveys[0] | null>(null)
   const [isEligible, setIsEligible] = useState(false)
-
+  const router = useRouter();
+  
   const toggleFilter = (filter: string) => {
     setFilters(prev => 
       prev.includes(filter) 
@@ -86,13 +88,12 @@ export default function Home() {
   }
 
   const participateInSurvey = () => {
-    alert(`Starting survey ${currentSurvey?.id}`)
+    router.push(`/participant/available/${currentSurvey.id}`)
     setModalOpen(false)
   }
 
   return (
     <main className={`${ibm.className} container mx-auto p-4`}>
-      <h1 className="text-3xl font-bold mb-6 text-center text-light uppercase">Survey Hub</h1>
       <Filters showWorldcoinOnly={showWorldcoinOnly} setShowWorldcoinOnly={setShowWorldcoinOnly} filters={filters} toggleFilter={toggleFilter} allRequisites={allRequisites} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredSurveys.map((survey) => (

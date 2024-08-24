@@ -18,7 +18,7 @@ interface SurveyTagProps {
     }
 
 
-export default function SurveyTag({key, survey, checkEligibilityAndParticipate}: SurveyTagProps) {
+export default function SurveyTag({ survey, checkEligibilityAndParticipate}: SurveyTagProps) {
     return (
         <Card key={survey.id} className="flex flex-col border-primary border-4">
             <CardHeader>
@@ -44,7 +44,7 @@ export default function SurveyTag({key, survey, checkEligibilityAndParticipate}:
             </CardContent>
             <CardFooter>
               <Button 
-                className="w-full bg-primary text-dark" 
+                className="w-full bg-primary text-dark " 
                 onClick={() => checkEligibilityAndParticipate(survey)}
               >
                 Check Eligibility & Participate

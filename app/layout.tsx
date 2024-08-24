@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "./components/navbar/Navbar";
 
 const inter = IBM_Plex_Mono({
   weight: ["100", "200", "300", "400", "700", ], 
@@ -20,7 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`bg-dark ${inter.className}`}>{children}</body>
+      <body className={`bg-dark ${inter.className}`}>
+        <Navbar />
+        {children}
+        </body>
     </html>
   );
 }
