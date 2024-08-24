@@ -80,7 +80,7 @@ export default function SurveyDashboard({surveys}) {
 
   const filteredSurveys = surveys.filter(survey => 
     (filters.length === 0 || filters.every(filter => survey.segmentation.includes(filter))) &&
-    (!showWorldcoinOnly || survey.requirements.includes("World Coin"))
+    (!showWorldcoinOnly || survey.requirements.includes("World ID"))
   )
 
   const checkEligibilityAndParticipate = (survey: typeof surveys[0]) => {

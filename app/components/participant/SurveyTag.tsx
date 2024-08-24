@@ -37,7 +37,7 @@ export default function SurveyTag({ survey, checkEligibilityAndParticipate}: Sur
                   <DollarSignIcon className="w-4 h-4" />
                   {/* {survey.reward.toFixed(2)} */}
                 </Badge>
-                {(survey.requirements.includes("World Coin")) && (
+                {(survey.requirements.includes("World ID")) && (
                   <Badge variant="outline" className="bg-blue-50">Worldcoin ID</Badge>
                 )}
               </div>
