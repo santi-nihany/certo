@@ -232,7 +232,13 @@ contract Surveys is ReentrancyGuard {
     /// @param _proofOfHuman A unique proof provided by the responder
     /// @param _proofOfData A unique proof for the data provided in the response
     /// @param ipfsCID The IPFS CID where the response data is stored
-    function submitSurveyResponse(uint256 surveyId, bytes32 _proofOfHuman, bytes32 _proofOfData, bytes32 _dataHash, bytes32 ipfsCID)
+    function submitSurveyResponse(
+        uint256 surveyId,
+        bytes32 _proofOfHuman,
+        bytes32 _proofOfData,
+        bytes32 _dataHash,
+        bytes32 ipfsCID
+    )
         external
         surveyIsActive(surveyId)
         hasNotResponded(surveyId, _proofOfHuman)
@@ -241,10 +247,10 @@ contract Surveys is ReentrancyGuard {
         bytesProvided(ipfsCID)
     {
         if (!_verifyHuman(_proofOfHuman)) {
-            revert InvalidProofOfHuman()
+            revert InvalidProofOfHuman();
         }
         if (!_verifyData(_proofOfData, _dataHash)) {
-            revert InvalidProofOfData()
+            revert InvalidProofOfData();
         }
         s_surveys[surveyId].totalResponses++;
         s_surveyResponders[surveyId][_proofOfHuman] = msg.sender;
@@ -315,11 +321,11 @@ contract Surveys is ReentrancyGuard {
 
     function _verifyHuman(bytes32 _proofOfHuman) internal returns (bool) {
         // TODO implement
-        return true
+        return true;
     }
 
-    function _verifyData(bytes32 _proofOfData) internal returns (bool) {
+    function _verifyData(bytes32 _proofOfData, bytes32 dataHash) internal returns (bool) {
         // TODO implement
-        return true
+        return true;
     }
 }
