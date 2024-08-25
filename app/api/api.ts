@@ -10,7 +10,7 @@ export type Survey = {
   id?: UUID;
   name: string;
   description: string;
-  owner: string;
+  owner?: string;
   prize: number;
   ipfs?: string;
   timeLimit: Date;
@@ -22,17 +22,20 @@ export type Survey = {
 };
 
 export type Question = {
-  index: number;
-  question: string;
-  options: string[];
-  multiple: boolean;
-};
+  index: number
+  question: string
+  options: string[]
+  multiple: boolean
+  is_ac: boolean
+  ac_correct?: string
+}
 
 export type Answer = {
-  id?: UUID;
-  survey_id: UUID;
-  data: { index: number; answers: string[] }[];
-};
+  id?: UUID
+  survey_id: UUID
+  data: { index: number, answers: string[] }[]
+  amount?: number
+}
 
 export const getAllSurveys = async (): Promise<Survey[]> => {
   const { data, error } = await supabase.from("surveys").select();
@@ -44,11 +47,10 @@ export const getSurvey = async (id: UUID): Promise<Survey> => {
   const { data, error } = await supabase
     .from("surveys")
     .select()
-    .eq("id", id.toString());
-  if (error) throw Error(error.message);
-  console.log(data);
-  return data[0] as Survey;
-};
+    .eq('id', id.toString())
+  if (error) throw Error(error.message)
+  return data[0] as Survey
+}
 
 export const pushSurvey = async (survey: Survey): Promise<Survey> => {
   const { data, error } = await supabase
@@ -58,13 +60,16 @@ export const pushSurvey = async (survey: Survey): Promise<Survey> => {
   if (error) throw Error(error.message);
   return data[0] as Survey;
 };
+
 export const getAnswers = async (surveyId: UUID): Promise<Answer[]> => {
   const { data, error } = await supabase.from("answers").select();
   if (error) throw Error(error.message);
   const answers = data as Answer[];
   // todo fix
-  return answers.filter((a) => a.survey_id == surveyId);
-};
+
+  return answers as Answer[]
+}
+
 
 export const pushAnswer = async (answer: Answer): Promise<Answer> => {
   const { data, error } = await supabase

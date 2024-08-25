@@ -1,28 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { PlusIcon, TrashIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { pushSurvey, Survey, Question } from "@/app/api/api";
+import { use, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { PlusIcon, TrashIcon } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { pushSurvey, Survey, Question } from '@/app/api/api'
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
+import { useActiveAccount } from 'thirdweb/react';
+
+
 
 type QuestionType = "multipleChoice" | "checkbox";
 
 interface LocalQuestion {
-  text: string;
-  type: QuestionType;
-  options: string[];
+  text: string
+  type: QuestionType
+  options: string[]
+  is_ac: boolean
+  ac_correct?: string
 }
 
 interface SurveyParameters {
@@ -30,20 +30,22 @@ interface SurveyParameters {
     enabled: boolean;
     quota: string;
     reward: {
-      enabled: boolean;
-      amount: string;
-    };
-  };
-  worldId: "required" | "optional";
-  quarkId: "required" | "optional";
+      enabled: boolean
+      amount: string
+    }
+  }
+  worldId: 'required' | 'optional'
+  quarkId: 'required' | 'optional'
+  surveyEndDate: Date
 }
 
 export default function CreateSurvey() {
   const router = useRouter();
+  const account = useActiveAccount();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<LocalQuestion[]>([
-    { text: "", type: "multipleChoice", options: [""] },
+    { text: "", type: "multipleChoice", options: [""], is_ac: false },
   ]);
   const [segmentations, setSegmentations] = useState<string[]>([""]);
   const [parameters, setParameters] = useState<SurveyParameters>({
@@ -55,37 +57,24 @@ export default function CreateSurvey() {
         amount: "",
       },
     },
-    worldId: "optional",
-    quarkId: "optional",
-  });
+    worldId: 'optional',
+    quarkId: 'optional',
+    surveyEndDate: new Date()
+  })
 
   const addQuestion = () => {
-    setQuestions([
-      ...questions,
-      { text: "", type: "multipleChoice", options: [""] },
-    ]);
-  };
+    setQuestions([...questions, { text: '', type: 'multipleChoice', options: [''], is_ac: false, ac_correct:'' }])
+  }
 
   const removeQuestion = (index: number) => {
     setQuestions(questions.filter((_, i) => i !== index));
   };
 
-  const updateQuestion = (
-    index: number,
-    field: keyof LocalQuestion,
-    value: string
-  ) => {
-    const updatedQuestions = [...questions];
-    if (field === "type") {
-      updatedQuestions[index] = {
-        ...updatedQuestions[index],
-        [field]: value as QuestionType,
-      };
-    } else {
-      updatedQuestions[index] = { ...updatedQuestions[index], [field]: value };
-    }
-    setQuestions(updatedQuestions);
-  };
+  const updateQuestion = (index: number, field: keyof LocalQuestion, value: any) => {
+    const updatedQuestions = [...questions]
+    updatedQuestions[index] = { ...updatedQuestions[index], [field]: value }
+    setQuestions(updatedQuestions)
+  }
 
   const addOption = (questionIndex: number) => {
     const updatedQuestions = [...questions];
@@ -145,25 +134,25 @@ export default function CreateSurvey() {
       index,
       question: q.text,
       options: q.options,
-      multiple: q.type === "checkbox",
-    }));
+      multiple: q.type === 'checkbox',
+      is_ac: q.is_ac,
+      ac_correct: q.ac_correct
+    }))
 
     // Construct the new survey object
     const newSurvey: Survey = {
-      name: title,
-      description,
-      owner: "owner-id", // Replace with actual owner ID
-      prize: parameters.participantQuota.reward.enabled
-        ? parseFloat(parameters.participantQuota.reward.amount)
-        : 0,
-      timeLimit: new Date(), // Set this if you have a specific time limit in mind
-      maxAmount: parseInt(parameters.participantQuota.quota) || 0,
-      minAmount: 0, // Set this if applicable
-      questions: backendQuestions,
-      requirements,
-      created_at: new Date(),
-      segmentation: segmentations, // Add the segmentations
-    };
+        name: title,
+        description,
+        owner: account?.address,  // Replace with actual owner ID
+        prize: parameters.participantQuota.reward.enabled ? parseFloat(parameters.participantQuota.reward.amount) : 0,
+        timeLimit: parameters.surveyEndDate,  // Set this if you have a specific time limit in mind
+        maxAmount: parseInt(parameters.participantQuota.quota) || 0,
+        minAmount: 0,  // Set this if applicable
+        questions: backendQuestions,
+        requirements, 
+        created_at: new Date(),
+        segmentation: segmentations // Add the segmentations
+    }
 
     try {
       // Push the survey to the backend
@@ -206,6 +195,17 @@ export default function CreateSurvey() {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Survey Parameters</h2>
             <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="SurveyEndDate">Survey End Date</Label>
+              <Input
+                id="SurveyEndDate"
+                type="date"
+                value={parameters.surveyEndDate}
+                onChange={(e) => updateParameters('surveyEndDate', e.target.value)}
+                className="w-30"
+              />
+            </div>
+
               <div className="flex items-center justify-between">
                 <Label htmlFor="participantQuota">Participant Quota</Label>
                 <Switch
@@ -336,16 +336,13 @@ export default function CreateSurvey() {
               className="w-full"
             >
               <PlusIcon className="h-4 w-4 mr-2" />
-              Add Another Segmentation
+              Add Segmentation
             </Button>
           </div>
           <div className="space-y-4">
             <Label>Questions</Label>
             {questions.map((question, questionIndex) => (
-              <div
-                key={questionIndex}
-                className="bg-gray-50 p-4 rounded-md space-y-2"
-              >
+              <div key={questionIndex} className="bg-gray-50 p-4 rounded-md space-y-2 relative">
                 <div className="flex items-center space-x-2">
                   <Input
                     value={question.text}
@@ -383,10 +380,16 @@ export default function CreateSurvey() {
                 </div>
                 <div className="pl-4 space-y-2">
                   {question.options.map((option, optionIndex) => (
-                    <div
-                      key={optionIndex}
-                      className="flex items-center space-x-2"
-                    >
+                    <div key={optionIndex} className="flex items-center space-x-2">
+                      {question.is_ac && (
+                        <input
+                          type="radio"
+                          name={`ac_correct_${questionIndex}`}
+                          value={option}
+                          checked={question.ac_correct === option}
+                          onChange={(e) => updateQuestion(questionIndex, 'ac_correct', e.target.value)}
+                        />
+                      )}
                       <Input
                         value={option}
                         onChange={(e) =>
@@ -418,6 +421,25 @@ export default function CreateSurvey() {
                   >
                     Add Option
                   </Button>
+                </div>
+                <div className="flex justify-end mt-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Label className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={question.is_ac}
+                            onChange={(e) => updateQuestion(questionIndex, 'is_ac', e.target.checked)}
+                          />
+                          <span>Is attention check</span>
+                        </Label>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">
+                        Adding an attention check question can help ensure the quality of responses by identifying inattentive participants.
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               </div>
             ))}

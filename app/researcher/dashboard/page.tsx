@@ -7,21 +7,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getAllSurveys, Survey } from '@/app/api/api'
+import { useActiveAccount } from 'thirdweb/react';
+
 
 export default function Dashboard() {
   const [surveys, setSurveys] = useState<Survey[]>([])
+  const account = useActiveAccount();
   const router = useRouter()
-
   useEffect(() => {
     const fetchSurveys = async () => {
       try {
         const fetchedSurveys = await getAllSurveys()
-        setSurveys(fetchedSurveys)
+        const filteredSurveys = fetchedSurveys.filter((survey) => survey.owner === account?.address)
+        setSurveys(filteredSurveys)
       } catch (error) {
         console.error('Failed to fetch surveys:', error)
       }
     }
-
     fetchSurveys()
   }, [])
 
