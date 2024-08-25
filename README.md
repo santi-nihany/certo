@@ -4,7 +4,7 @@
 
 # Science... well, basically science sucks
 
-Scientific research often faces challenges due to inconsistencies in data, making findings difficult to replicate. Researchers frequently struggle to identify participants who meet specific criteria, and online surveys are increasingly vulnerable to being overrun by bots, leading to unreliable results. This results in:
+I mean, not really, we love science... But, scientific research often faces challenges due to inconsistencies in data, making findings difficult to replicate. Researchers struggle to identify participants who meet specific criteria, and online surveys are increasingly vulnerable to being overrun by bots, leading to unreliable results. This results in:
 
 - A lack of trust in the data
 - Unverifiable datasets
