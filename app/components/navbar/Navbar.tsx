@@ -7,6 +7,13 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { MenuIcon, X } from "lucide-react";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { createThirdwebClient } from "thirdweb";
+import { ConnectButton } from "thirdweb/react";
+import { polygonAmoy } from "thirdweb/chains";
+
+const client = createThirdwebClient({
+  clientId: "989b407de9ce25994a3ba556785c54f6",
+});
 
 const navItems = [
   { href: "/participant/available", label: "Participate" },
@@ -40,9 +47,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          <Button className="border-2 border-primary bg-transparent hover:bg-none">
-            <Link href={`/login`}>Design a survey</Link>
-          </Button>
+          <ConnectButton client={client} chain={polygonAmoy} />
         </nav>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild className="md:hidden">
