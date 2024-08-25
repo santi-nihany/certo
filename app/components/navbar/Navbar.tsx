@@ -1,5 +1,4 @@
-"use client"
-
+"use client" 
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -39,8 +38,9 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
+          
           <Button className="border-2 border-primary bg-transparent hover:bg-none">
-            <Link href={`/login`}>Log in</Link>
+            <Link href={`/`}>Researcher Log In</Link>
           </Button>
         </nav>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
