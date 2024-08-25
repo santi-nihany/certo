@@ -17,36 +17,33 @@ contract HelperConfig is Script {
 
     uint256 public constant SEPOLIA_CHAIN_ID = 11_155_111;
     uint256 public constant AMOY_CHAIN_ID = 80002;
+    uint256 public constant ZKSYNCSEPOLIA_CHAIN_ID = 300;
 
     constructor() {
         if (block.chainid == SEPOLIA_CHAIN_ID) {
             activeNetworkConfig = getSepoliaEthConfig();
         } else if (block.chainid == AMOY_CHAIN_ID) {
             activeNetworkConfig = getAmoyConfig();
+        } else if (block.chainid == ZKSYNCSEPOLIA_CHAIN_ID) {
+            activeNetworkConfig = getZkSyncSepoliaConfig();
         } else {
             activeNetworkConfig = getOrCreateAnvilEthConfig();
         }
     }
 
     function getSepoliaEthConfig() public view returns (NetworkConfig memory sepoliaNetworkConfig) {
-        sepoliaNetworkConfig = NetworkConfig({
-            usdc: 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238,
-            deployerKey: vm.envUint("PRIVATE_KEY")
-        });
+        sepoliaNetworkConfig =
+            NetworkConfig({usdc: 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238, deployerKey: vm.envUint("PRIVATE_KEY")});
     }
 
     function getAmoyConfig() public view returns (NetworkConfig memory amoyNetworkConfig) {
-        amoyNetworkConfig = NetworkConfig({
-            usdc: 0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582,
-            deployerKey: vm.envUint("PRIVATE_KEY")
-        });
+        amoyNetworkConfig =
+            NetworkConfig({usdc: 0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582, deployerKey: vm.envUint("PRIVATE_KEY")});
     }
 
     function getZkSyncSepoliaConfig() public view returns (NetworkConfig memory zkSyncSepoliaConfig) {
-        zkSyncSepoliaConfig = NetworkConfig({
-            usdc: 0xAe045DE5638162fa134807Cb558E15A3F5A7F853,
-            deployerKey: vm.envUint("PRIVATE_KEY")
-        });
+        zkSyncSepoliaConfig =
+            NetworkConfig({usdc: 0xAe045DE5638162fa134807Cb558E15A3F5A7F853, deployerKey: vm.envUint("PRIVATE_KEY")});
     }
 
     function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory anvilNetworkConfig) {
@@ -55,9 +52,6 @@ contract HelperConfig is Script {
 
         vm.stopBroadcast();
 
-        anvilNetworkConfig = NetworkConfig({
-            usdc: address(usdcMock),
-            deployerKey: DEFAULT_ANVIL_PRIVATE_KEY
-        });
+        anvilNetworkConfig = NetworkConfig({usdc: address(usdcMock), deployerKey: DEFAULT_ANVIL_PRIVATE_KEY});
     }
 }
