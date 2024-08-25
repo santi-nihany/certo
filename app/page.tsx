@@ -11,13 +11,13 @@ export default function Home() {
     <div className="h-screen bg-cover bg-center flex flex-col">
       <Header />
       <div className="h-screen w-full text-primary mx-auto flex flex-col items-center mt-20">
-        <div className="text-7xl font-light italic text-center mt-20 mr-20 ml-20">
+        <div className="text-3xl md:text-7xl font-light italic text-center mt-20 mr-20 ml-20">
           BRING REPLICABILITY BACK TO SCIENCE
         </div>
-        <div className="flex flex-col items-center justify-center text-3xl mt-5">
+        <div className="flex flex-col items-center justify-center text-xl md:text-3xl mt-5">
           VERIFIABLE RESEARCH
         </div>
-        <div className="flex flex-col items-center justify-center text-3xl mt-5">
+        <div className="flex flex-col items-center justify-center text-xl md:text-3xl mt-5">
           <Button className="mt-5 bg-primary text-black hover:bg-black hover:border-2 hover:border-primary hover:text-primary">
             <a href="#protocol">Learn more</a>
           </Button>
