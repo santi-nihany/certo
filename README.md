@@ -67,6 +67,8 @@ We can think of this flow as:
 ### Data Integrity
 
 - Your participation data, including any verification proof, is stored on-chain, ensuring that your input is valid.
+- Researchers can also include Attention Checks—questions designed to determine whether a participant is responding conscientiously. Participants who answer incorrectly on more than 40% of these Attention Checks will be excluded from the dataset.
+- Participants can participate only once.
 
 ### Survey Completion
 
@@ -101,15 +103,5 @@ To ensure that only real individuals participate in surveys, we use World ID for
 To make the platform accessible to users unfamiliar with Web3, we leverage ThirdWeb for Account Abstraction. This allows researchers to log in and manage surveys using familiar credentials, such as their Google Account, simplifying the process without compromising security or verifiability.
 
 # Contract Addresses
-## Polygon Tesnet
-`Survey.sol`:
-
-## ZKsync Testnet
-`Survey.sol`:
-
-## Avalanche Testnet
-`Survey.sol`:
-
-## Arbitrum Tesnet
-`Survey.sol`:
-
+## Polygon 
+`Survey.sol`: 0x077d54488c525a5abeea077589a31c3eb675555e
