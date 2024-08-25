@@ -260,16 +260,14 @@ contract Surveys is ReentrancyGuard {
         surveyIsFinalized(_surveyId)
         isResponder(_surveyId, _proofOfHuman)
         nonReentrant
-        returns (uint256, uint256)
     {
         // Divide the total prize by the number of responders
         uint256 prize = s_surveys[_surveyId].totalPrize / s_surveys[_surveyId].totalResponses;
         // Transfer the amount to the responder
-        // bool success = IERC20(s_usdcToken).transfer(msg.sender, prize);
-        // if (!success) {
-        //     revert TransferFailed();
-        // }
-        return (prize, IERC20(s_usdcToken).balanceOf(address(this)));
+        bool success = IERC20(s_usdcToken).transfer(msg.sender, prize);
+        if (!success) {
+            revert TransferFailed();
+        }
     }
 
     /// @notice Allows the survey creator to reclaim the prize if the survey is reverted

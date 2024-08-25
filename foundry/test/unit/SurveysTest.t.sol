@@ -105,6 +105,7 @@ contract SurveysTest is Test {
         vm.stopPrank();
 
         vm.startPrank(user1);
+        uint256 starting = IERC20(usdc).balanceOf(user1);
         bytes32 proofOfHuman = keccak256(abi.encodePacked("human1"));
         bytes32 proofOfData = keccak256(abi.encodePacked("data1"));
         bytes32 ipfsCID = keccak256(abi.encodePacked("ipfs1"));
@@ -116,9 +117,8 @@ contract SurveysTest is Test {
         vm.warp(block.timestamp + 2 days);
 
         vm.startPrank(user1);
-        (uint256 prize, uint256 balance) = surveys.withdraw(1, proofOfHuman);
-        console.log("Prize: ", prize);
-        console.log("Balance: ", balance);
+        surveys.withdraw(1, proofOfHuman);
+        assertEq(IERC20(usdc).balanceOf(user1), starting + 100 ether);
     }
 
     // function testFailWithdrawBeforeFinalization() public {
