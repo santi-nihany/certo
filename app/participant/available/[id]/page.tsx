@@ -7,7 +7,6 @@ export default async function Home({params}) {
 
     const survey = await getSurvey(id)
     return (
-      
         <SingleSurvey survey={survey} />
     )
 }
