@@ -102,6 +102,11 @@ To ensure that only real individuals participate in surveys, we use World ID for
 ## Account Abstraction
 To make the platform accessible to users unfamiliar with Web3, we leverage ThirdWeb for Account Abstraction. This allows researchers to log in and manage surveys using familiar credentials, such as their Google Account, simplifying the process without compromising security or verifiability.
 
+## Zero Knowledge Verification for Criteria
+In the version 2, we plan to implement zk circuits in order to verify certain criteria such as age, nationality and ethnical data or studies, without the user revealing his/her identity.
+
+We plan on deploying this to ZKsync and write the circuits on Noir.
+
 # Contract Addresses
 ## Polygon 
 `Survey.sol`: 0x077d54488c525a5abeea077589a31c3eb675555e
