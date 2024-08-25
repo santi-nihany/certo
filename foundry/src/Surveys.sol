@@ -201,6 +201,7 @@ contract Surveys is ReentrancyGuard {
         external
         moreThanZero(_totalPrize)
         moreThanZero(_minResponses)
+        returns (uint256)
     {
         if (_maxResponses < _minResponses) {
             revert MaxShouldBeGreaterThanMin();
@@ -216,6 +217,7 @@ contract Surveys is ReentrancyGuard {
             revert TransferFailed();
         }
         emit SurveyCreated(s_surveyCounter, msg.sender, _totalPrize, _minResponses, _maxResponses, _expirationTime);
+        return s_surveyCounter;
     }
 
     /// @notice Submits a response to a survey

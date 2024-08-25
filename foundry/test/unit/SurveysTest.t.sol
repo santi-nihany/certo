@@ -50,8 +50,9 @@ contract SurveysTest is Test {
         uint256 balance = IERC20(usdc).balanceOf(owner);
         console.log("Owner balance: ", balance);
 
-        surveys.createSurvey(100 ether, 1, 10, block.timestamp + 1 days);
-
+        uint256 id = surveys.createSurvey(100 ether, 1, 10, block.timestamp + 1 days);
+        assertEq(id, 1);
+        
         (address creator,, uint256 expirationTime, uint256 totalPrize,,,) = surveys.s_surveys(1);
         assertEq(creator, owner);
         assertEq(expirationTime, block.timestamp + 1 days);
