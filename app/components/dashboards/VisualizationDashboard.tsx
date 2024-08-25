@@ -111,7 +111,7 @@ export default function VisualizationDashboard({ survey, answers }) {
       <p className="text-lg mb-8 text-light">{surveyData.description}</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {surveyData.questions.map((question) => (
-          <Card>
+          <Card key={question.id}>
             <CardHeader>
               <CardTitle>{question.question}</CardTitle>
               <CardDescription>Answers:{question.amount}</CardDescription>
