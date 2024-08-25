@@ -11,17 +11,19 @@ export default function Header() {
       <noscript>
         <style>{`.nojs-show { opacity: 1; top: 0; }`}</style>
       </noscript>
-      <div className={styles.signedInStatus}>
-        <p
+      <div className={`${styles.signedInStatus} bg-primary`}>
+        <div
           className={`nojs-show ${
             !session && loading ? styles.loading : styles.loaded
           }`}
         >
           {!session && (
-            <>
-              <span className="text-white">You are not signed in</span>
+            <p className="flex  justify-center items-center ">
+              <span className="text-black">
+                Participate in a survey and earn rewards |
+              </span>
               <button
-                className="bg-primary text-black rounded-lg p-2"
+                className=" text-black font-bold underline p-2"
                 onClick={(e) => {
                   e.preventDefault();
                   signIn("worldcoin"); // worldcoin es el único proveedor
@@ -29,7 +31,7 @@ export default function Header() {
               >
                 Sign in
               </button>
-            </>
+            </p>
           )}
           {session?.user && (
             <>
@@ -39,11 +41,6 @@ export default function Header() {
                   className={styles.avatar}
                 />
               )}
-              <span className={styles.signedInText}>
-                <small>Signed in as</small>
-                <br />
-                <strong>{session.user.email ?? session.user.name}</strong>
-              </span>
               <button
                 className={styles.button}
                 onClick={(e) => {
@@ -55,7 +52,7 @@ export default function Header() {
               </button>
             </>
           )}
-        </p>
+        </div>
       </div>
     </header>
   );
