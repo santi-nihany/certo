@@ -25,16 +25,14 @@ const ibm = IBM_Plex_Mono({
 
 export default function SurveyDashboard({surveys}) {
   const allRequisites = Array.from(new Set(surveys.flatMap(survey => survey.segmentation).sort()))
-  console.log(allRequisites)
   const [filters, setFilters] = useState<string[]>([])
   const [showWorldcoinOnly, setShowWorldcoinOnly] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [currentSurvey, setCurrentSurvey] = useState<typeof surveys[0] | null>(null)
   const [isEligible, setIsEligible] = useState(false)
-  console.log(surveys)
+  const { data: session, status } = useSession();
 
   const router = useRouter()
-  const { data: session, status } = useSession();
   
   const toggleFilter = (filter: string) => {
     setFilters(prev => 
@@ -53,7 +51,8 @@ export default function SurveyDashboard({surveys}) {
     setCurrentSurvey(survey)
     // Mock eligibility check - in a real app, this would be based on user data
     const elegible = survey.requirements.includes("World ID") && (session !== null)  
-    setIsEligible(!elegible)
+    console.log("Sesion World ID", session)
+    setIsEligible(elegible)
     setModalOpen(true)
   }
 
