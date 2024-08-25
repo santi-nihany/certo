@@ -4,7 +4,7 @@
 
 # Science... well, basically science sucks
 
-Scientific research often faces challenges due to inconsistencies in data, making findings difficult to replicate. Researchers frequently struggle to identify participants who meet specific criteria, and online surveys are increasingly vulnerable to being overrun by bots, leading to unreliable results. This results in:
+I mean, not really, we love science... But, scientific research often faces challenges due to inconsistencies in data, making findings difficult to replicate. Researchers struggle to identify participants who meet specific criteria, and online surveys are increasingly vulnerable to being overrun by bots, leading to unreliable results. This results in:
 
 - A lack of trust in the data
 - Unverifiable datasets
@@ -22,8 +22,8 @@ Scientific research often faces challenges due to inconsistencies in data, makin
 
 ## Researcher POV
 We can think of this flow as:
-<div>
-<img src="readme/research_diagram.png" alt="diagram" width="100%" height="100%"/>
+<div align="center">
+<img src="readme/research_diagram.png" alt="diagram" width="50%" height="50%"/>
 </div>
 
 ### Survey Setup
@@ -50,8 +50,8 @@ We can think of this flow as:
 ## User POV
 We can think of this flow as: 
 
-<div>
-<img src="readme/survey_p_diagram.png" alt="diagram" width="100%" height="100%"/>
+<div align="center">
+<img src="readme/survey_p_diagram.png" alt="diagram" width="50%" height="50%"/>
 </div>
 
 ### Login and Access
@@ -73,5 +73,43 @@ We can think of this flow as:
 - After the survey is completed or the participant cap is reached, the final results are generated and stored on-chain.
 - You can be assured that the survey data is secure, verified, and contributes to trustworthy research outcomes.
 
-# The implementation
+# Run locally
+1. Install dependencies
+```bash
+npm install
+```
+2. Complete `env.local` with the variables:
+```bash
+NEXTAUTH_URL=http://localhost:3000
+# Generate this with `openssl rand -base64 32`
+NEXTAUTH_SECRET=
+
+# Get these values from the Worldcoin Developer Portal
+WLD_CLIENT_ID=
+WLD_CLIENT_SECRET=
+```
+3. Run the project
+
+```bash
+npm run dev
+```
+# Technologies We Use
+## Proof of Personhood
+To ensure that only real individuals participate in surveys, we use World ID for Proof of Personhood (PoP). This helps prevent bots from manipulating survey results and ensures the integrity of the data collected.
+
+## Account Abstraction
+To make the platform accessible to users unfamiliar with Web3, we leverage ThirdWeb for Account Abstraction. This allows researchers to log in and manage surveys using familiar credentials, such as their Google Account, simplifying the process without compromising security or verifiability.
+
+# Contract Addresses
+## Polygon Tesnet
+`Survey.sol`:
+
+## ZKsync Testnet
+`Survey.sol`:
+
+## Avalanche Testnet
+`Survey.sol`:
+
+## Arbitrum Tesnet
+`Survey.sol`:
 
