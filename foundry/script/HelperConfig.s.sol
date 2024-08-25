@@ -19,6 +19,7 @@ contract HelperConfig is Script {
     uint256 public constant AMOY_CHAIN_ID = 80002;
     uint256 public constant ZKSYNCSEPOLIA_CHAIN_ID = 300;
     uint256 public constant POLYGON_CHAIN_ID = 137;
+    uint256 public constant AVALANCHEFUJI_CHAIN_ID = 43113;
 
     constructor() {
         if (block.chainid == SEPOLIA_CHAIN_ID) {
@@ -29,6 +30,8 @@ contract HelperConfig is Script {
             activeNetworkConfig = getZkSyncSepoliaConfig();
         } else if (block.chainid == POLYGON_CHAIN_ID) {
             activeNetworkConfig = getZkSyncSepoliaConfig();
+        } else if (block.chainid == AVALANCHEFUJI_CHAIN_ID) {
+            activeNetworkConfig = getAvalancheFujiEthConfig();
         } else {
             activeNetworkConfig = getOrCreateAnvilEthConfig();
         }
@@ -52,6 +55,11 @@ contract HelperConfig is Script {
     function getPolygonConfig() public view returns (NetworkConfig memory polygonNetworkConfig) {
         polygonNetworkConfig =
             NetworkConfig({usdc: 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174, deployerKey: vm.envUint("PRIVATE_KEY")});
+    }
+
+    function getAvalancheFujiEthConfig() public view returns (NetworkConfig memory avalancheFujiNetworkConfig) {
+        avalancheFujiNetworkConfig =
+            NetworkConfig({usdc: 0x5425890298aed601595a70AB815c96711a31Bc65, deployerKey: vm.envUint("PRIVATE_KEY")});
     }
 
     function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory anvilNetworkConfig) {
