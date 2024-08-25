@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { getAllSurveys, Survey } from '@/api/api'
+import { getAllSurveys, Survey } from '@/app/api/api'
 
 export default function Dashboard() {
   const [surveys, setSurveys] = useState<Survey[]>([])

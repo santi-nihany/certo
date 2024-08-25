@@ -60,7 +60,6 @@ export const pushSurvey = async (survey: Survey): Promise<Survey> => {
   return data[0] as Survey
 }
 export const getAnswers = async (surveyId: UUID): Promise<Answer[]> => {
-  console.log(surveyId)
   const { data, error } = await supabase
     .from('answers')
     .select()

@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { pushSurvey, Survey, Question } from '@/api/api'
+import { pushSurvey, Survey, Question } from '@/app/api/api'
 
 type QuestionType = 'multipleChoice' | 'checkbox'
 
