@@ -102,14 +102,4 @@ To make the platform accessible to users unfamiliar with Web3, we leverage Third
 
 # Contract Addresses
 ## Polygon Tesnet
-`Survey.sol`:
-
-## ZKsync Testnet
-`Survey.sol`:
-
-## Avalanche Testnet
-`Survey.sol`:
-
-## Arbitrum Tesnet
-`Survey.sol`:
-
+`Survey.sol`: `0x077d54488c525a5abeea077589a31c3eb675555e`
