@@ -120,45 +120,20 @@ export default function VisualizationDashboard({ survey, answers }) {
               {question && (
                 <div className="w-full h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    {!question.multiple ? (
-                      <PieChart>
-                        <Pie
-                          data={question.results}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={({ name, percent }) =>
-                            `${name}: ${(percent * 100).toFixed(0)}%`
-                          }
-                          outerRadius={150}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {question.results.map((entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={COLORS[index % COLORS.length]}
-                            />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    ) : (
-                      <BarChart data={question.results}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="value" fill="#8884d8">
-                          {question.results.map((entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={COLORS[index % COLORS.length]}
-                            />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    )}
+                    <BarChart data={question.results}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="value" fill="#8884d8">
+                        {question.results.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
                   </ResponsiveContainer>
                 </div>
               )}

@@ -8,6 +8,8 @@ import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
 import { ThirdwebProvider } from "thirdweb/react";
 
+export const fetchCache = 'force-no-store';
+
 const inter = IBM_Plex_Mono({
   weight: ["100", "200", "300", "400", "700"],
   subsets: ["latin"],
