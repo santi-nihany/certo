@@ -21,43 +21,7 @@ const ibm = IBM_Plex_Mono({
   subsets: ["latin"],
 })
 
-// Mock data for surveys
-// const surveys = [
-//   {
-//     id: 1,
-//     title: "Consumer Habits Survey",
-//     description: "Share your shopping preferences and habits",
-//     requisites: ["Age 18-65", "US Resident", "Online shopper"],
-//     reward: 5.50,
-//     requiresWorldcoinId: false,
-//   },
-//   {
-//     id: 2,
-//     title: "Tech Usage Survey",
-//     description: "Tell us about your technology usage patterns",
-//     requisites: ["Own a smartphone", "Use social media", "Age 16-40"],
-//     reward: 4.75,
-//     requiresWorldcoinId: true,
-//   },
-//   {
-//     id: 3,
-//     title: "Health and Fitness Survey",
-//     description: "Answer questions about your health and fitness routines",
-//     requisites: ["Exercise regularly", "Age 21-50", "No chronic conditions"],
-//     reward: 6.25,
-//     requiresWorldcoinId: false,
-//   },
-//   {
-//     id: 4,
-//     title: "Work-Life Balance Survey",
-//     description: "Share insights on managing work and personal life",
-//     requisites: ["Full-time employed", "Age 25-55", "Urban resident"],
-//     reward: 5.00,
-//     requiresWorldcoinId: true,
-//   },
-// ]
 
-// Get unique requisites from all surveys
 
 export default function SurveyDashboard({surveys}) {
   const allRequisites = Array.from(new Set(surveys.flatMap(survey => survey.segmentation).sort()))
@@ -88,7 +52,8 @@ export default function SurveyDashboard({surveys}) {
   const checkEligibilityAndParticipate = (survey: typeof surveys[0]) => {
     setCurrentSurvey(survey)
     // Mock eligibility check - in a real app, this would be based on user data
-    setIsEligible(Math.random() > 0.5)
+    const elegible = survey.requirements.includes("World ID") && (session !== null)  
+    setIsEligible(!elegible)
     setModalOpen(true)
   }
 
