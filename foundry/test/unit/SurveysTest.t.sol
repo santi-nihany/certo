@@ -14,7 +14,6 @@ import {ERC20Mock} from "../mocks/ERC20Mock.sol";
 contract SurveysTest is Test {
     Surveys surveys;
     HelperConfig helperConfig;
-    address usdcUsdPriceFeed;
     address usdc;
     uint256 deployerKey;
 
@@ -29,19 +28,13 @@ contract SurveysTest is Test {
     function setUp() external {
         DeploySurveys deployer = new DeploySurveys();
         (surveys, helperConfig) = deployer.run();
-        (usdcUsdPriceFeed, usdc, deployerKey) = helperConfig.activeNetworkConfig();
+        (usdc, deployerKey) = helperConfig.activeNetworkConfig();
         if (block.chainid == 31_337) {
             vm.deal(user, STARTING_USER_BALANCE);
         }
         ERC20Mock(usdc).mint(owner, STARTING_USER_BALANCE);
         ERC20Mock(usdc).mint(user1, STARTING_USER_BALANCE);
         ERC20Mock(usdc).mint(user2, STARTING_USER_BALANCE);
-    }
-
-    function testGetTokenAmountFromUsd() public {
-        uint256 amountusdc = surveys.getTokenAmountFromUsd(10 * 1e18);
-        console.log("Amount USDC: ", amountusdc);
-        // assertEq(amountWeth, expectedWeth);
     }
 
     function testCreateSurvey() public {

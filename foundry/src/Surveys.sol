@@ -3,7 +3,6 @@ pragma solidity ^0.8.20;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 /// @title A Survey Contract for creating and responding to surveys with USDC compensation
 /// @author Certo
@@ -120,10 +119,6 @@ contract Surveys is ReentrancyGuard {
     // State Vars //
     //////////////
 
-    uint256 private constant PRECISION = 1e18;
-    uint256 private constant ADDITIONAL_FEED_PRECISION = 1e10;
-    uint256 private constant FEED_PRECISION = 1e8;
-
     uint256 public s_surveyCounter;
     mapping(uint256 => Survey) public s_surveys;
     mapping(uint256 => mapping(bytes32 => address)) public s_surveyResponders;
@@ -132,10 +127,8 @@ contract Surveys is ReentrancyGuard {
 
     /// @notice Initializes the Surveys contract with the USDC token and Chainlink price feed addresses
     /// @param token The address of the USDC token contract
-    /// @param _priceFeed The address of the Chainlink price feed for USDC/USD
-    constructor(address token, address _priceFeed) {
+    constructor(address token) {
         s_surveyCounter = 0;
-        s_usdcPriceFeed = _priceFeed;
         s_usdcToken = token;
     }
 
@@ -216,10 +209,9 @@ contract Surveys is ReentrancyGuard {
             revert NeedsGreaterTimeStamp();
         }
         s_surveyCounter++;
-        uint256 usdcAmount = getTokenAmountFromUsd(_totalPrize);
         s_surveys[s_surveyCounter] =
-            Survey(msg.sender, block.timestamp, _expirationTime, usdcAmount, _minResponses, _maxResponses, 0);
-        bool success = IERC20(s_usdcToken).transferFrom(msg.sender, address(this), usdcAmount);
+            Survey(msg.sender, block.timestamp, _expirationTime, _totalPrize, _minResponses, _maxResponses, 0);
+        bool success = IERC20(s_usdcToken).transferFrom(msg.sender, address(this), _totalPrize);
         if (!success) {
             revert TransferFailed();
         }
@@ -290,20 +282,6 @@ contract Surveys is ReentrancyGuard {
     }
 
     // internals private
-
-    /// @notice Converts a USD amount (in Wei) to the equivalent USDC amount
-    /// @dev Uses Chainlink price feeds to get the current USD/USDC exchange rate
-    /// @param usdAmountInWei The amount in USD (in Wei) to convert
-    /// @return The equivalent amount in USDC
-    function getTokenAmountFromUsd(uint256 usdAmountInWei) public view returns (uint256) {
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(s_usdcPriceFeed);
-        (, int256 price,,,) = priceFeed.latestRoundData();
-        // $100e18 USD
-        // 1 ETH = 2000 USD
-        // The returned value from Chainlink will be 2000 * 1e8
-        // Most USD pairs have 8 decimals, so we will just pretend they all do
-        return ((usdAmountInWei * PRECISION) / (uint256(price) * ADDITIONAL_FEED_PRECISION));
-    }
 
     /// @notice Determines the current state of a survey
     /// @param _surveyId The ID of the survey to check

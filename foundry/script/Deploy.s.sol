@@ -9,11 +9,10 @@ import {Surveys} from "../src/Surveys.sol";
 contract DeploySurveys is Script {
     function run() external returns (Surveys, HelperConfig) {
         HelperConfig config = new HelperConfig();
-        (address usdcUsdPriceFeed, address usdcToken, uint256 deployerKey) = config.activeNetworkConfig();
-        console.log("--DeploySurveys--");
+        (address usdcToken, uint256 deployerKey) = config.activeNetworkConfig();        console.log("--DeploySurveys--");
         console.log("usdc: ", usdcToken);
         vm.startBroadcast(deployerKey);
-        Surveys surveys = new Surveys(usdcToken, usdcUsdPriceFeed);
+        Surveys surveys = new Surveys(usdcToken);
         vm.stopBroadcast();
 
         return (surveys, config);
