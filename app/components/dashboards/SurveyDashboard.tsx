@@ -62,7 +62,9 @@ export default function SurveyDashboard({ surveys }) {
     setCurrentSurvey(survey);
     // Mock eligibility check - in a real app, this would be based on user data
     const elegible =
-      survey.requirements.includes("World ID") && session !== null;
+      (survey.requirements.includes("World ID") && session !== null) ||
+      !survey.requirements.includes("World ID");
+    console.log("Elegible", elegible);
     console.log("Sesion World ID", session);
     setIsEligible(elegible);
     setModalOpen(true);
