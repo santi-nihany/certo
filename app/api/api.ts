@@ -52,7 +52,6 @@ export const getSurvey = async (id: UUID): Promise<Survey> => {
   return data[0] as Survey
 }
 
-
 export const pushSurvey = async (survey: Survey): Promise<Survey> => {
   const { data, error } = await supabase
     .from("surveys")
@@ -66,8 +65,10 @@ export const getAnswers = async (surveyId: UUID): Promise<Answer[]> => {
   if (error) throw Error(error.message);
   const answers = data as Answer[];
   // todo fix
-  return answers.filter((a) => a.survey_id == surveyId);
-};
+
+  return answers as Answer[]
+}
+
 
 export const pushAnswer = async (answer: Answer): Promise<Answer> => {
   const { data, error } = await supabase

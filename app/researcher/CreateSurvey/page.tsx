@@ -39,11 +39,13 @@ interface SurveyParameters {
 }
 
 export default function CreateSurvey() {
-  const router = useRouter()
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [questions, setQuestions] = useState<LocalQuestion[]>([]) // Start with an empty array
-  const [segmentations, setSegmentations] = useState<string[]>([]) // Start with an empty array
+  const router = useRouter();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [questions, setQuestions] = useState<LocalQuestion[]>([
+    { text: "", type: "multipleChoice", options: [""], is_ac: false },
+  ]);
+  const [segmentations, setSegmentations] = useState<string[]>([""]);
   const [parameters, setParameters] = useState<SurveyParameters>({
     participantQuota: {
       enabled: false,
