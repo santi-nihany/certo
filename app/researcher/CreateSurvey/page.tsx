@@ -34,6 +34,8 @@ interface SurveyParameters {
   }
   worldId: 'required' | 'optional'
   quarkId: 'required' | 'optional'
+  surveyEndDate: Date
+
 }
 
 export default function CreateSurvey() {
@@ -52,7 +54,8 @@ export default function CreateSurvey() {
       }
     },
     worldId: 'optional',
-    quarkId: 'optional'
+    quarkId: 'optional',
+    surveyEndDate: new Date()
   })
 
   const addQuestion = () => {
@@ -132,7 +135,7 @@ export default function CreateSurvey() {
         description,
         owner: 'owner-id',  // Replace with actual owner ID
         prize: parameters.participantQuota.reward.enabled ? parseFloat(parameters.participantQuota.reward.amount) : 0,
-        timeLimit: new Date(),  // Set this if you have a specific time limit in mind
+        timeLimit: parameters.surveyEndDate,  // Set this if you have a specific time limit in mind
         maxAmount: parseInt(parameters.participantQuota.quota) || 0,
         minAmount: 0,  // Set this if applicable
         questions: backendQuestions,
@@ -182,6 +185,17 @@ export default function CreateSurvey() {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Survey Parameters</h2>
             <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="SurveyEndDate">Survey End Date</Label>
+              <Input
+                id="SurveyEndDate"
+                type="date"
+                value={parameters.surveyEndDate}
+                onChange={(e) => updateParameters('surveyEndDate', e.target.value)}
+                className="w-30"
+              />
+            </div>
+
               <div className="flex items-center justify-between">
                 <Label htmlFor="participantQuota">Participant Quota</Label>
                 <Switch
