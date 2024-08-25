@@ -55,8 +55,7 @@ export default function SurveyDashboard({ surveys }) {
     (survey) =>
       (filters.length === 0 ||
         filters.every((filter) => survey.segmentation.includes(filter))) &&
-      (!showWorldcoinOnly || survey.requirements.includes("World ID")) &&
-      survey.owner !== account?.address
+      (!showWorldcoinOnly || survey.requirements.includes("World ID"))
   );
 
   const checkEligibilityAndParticipate = (survey: (typeof surveys)[0]) => {
