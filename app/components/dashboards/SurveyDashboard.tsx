@@ -14,6 +14,7 @@ import Filters from "@/app/components/participant/Filters"
 import SurveyTag from "@/app/components/participant/SurveyTag"
 import { IBM_Plex_Mono } from "next/font/google"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 const ibm = IBM_Plex_Mono({
   weight: ["100", "200", "300", "400", "700"],
@@ -69,6 +70,7 @@ export default function SurveyDashboard({surveys}) {
   console.log(surveys)
 
   const router = useRouter()
+  const { data: session, status } = useSession();
   
   const toggleFilter = (filter: string) => {
     setFilters(prev => 

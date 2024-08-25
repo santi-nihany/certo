@@ -61,18 +61,19 @@ import {
 // };
 
 // Count Answers should get each answer and count the number of times it appears
-function countAnswers(answers) {
+function countAnswers(answers, id) {
   const results = {};
   answers.forEach((answer) => {
-    answer.data.forEach((data) => {
-      data.answers.forEach((answer) => {
+    const question = answer.data.find((data) => data.index === id);
+    if (question) {
+      question.answers.forEach((answer) => {
         if (results[answer]) {
           results[answer] += 1;
         } else {
           results[answer] = 1;
         }
       });
-    });
+    }
   });
 
   return Object.keys(results).map((key) => ({
@@ -84,12 +85,11 @@ function countAnswers(answers) {
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 export default function VisualizationDashboard({ survey, answers }) {
-
   const surveyData = {
     name: survey.name,
     description: survey.description,
     questions: survey.questions.map((question) => {
-      const results = countAnswers(answers);
+      const results = countAnswers(answers, question.index);
       return {
         id: question.index,
         multiple: question.multiple,
@@ -101,7 +101,7 @@ export default function VisualizationDashboard({ survey, answers }) {
     }),
   };
 
-  console.log("Respuestas", surveyData);
+  console.log("Questions", survey.questions);
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-6 text-light">{surveyData.name}</h1>
@@ -121,13 +121,15 @@ export default function VisualizationDashboard({ survey, answers }) {
             <Card>
               <CardHeader>
                 <CardTitle>{question.question}</CardTitle>
-                <CardDescription>Cantidad de Respuestas: {question.amount}</CardDescription>
+                <CardDescription>
+                  Cantidad de Respuestas: {question.amount}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {question && (
                   <div className="w-full h-[400px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      {!question.multiple? (
+                      {!question.multiple ? (
                         <PieChart>
                           <Pie
                             data={question.results}
