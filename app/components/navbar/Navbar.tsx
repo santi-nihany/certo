@@ -1,24 +1,23 @@
-"use client" 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { MenuIcon, X } from "lucide-react"
-import Image from "next/image"
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { MenuIcon, X } from "lucide-react";
+import Image from "next/image";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const navItems = [
   { href: "/participant/available", label: "Participate" },
   { href: "/researcher/dashboard", label: "My Surveys" },
-]
+];
 
 export default function Navbar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const pathname = usePathname()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-light/30 bg-black text-light">
@@ -32,15 +31,17 @@ export default function Navbar() {
               key={item.href}
               href={item.href}
               className={`text-sm font-medium transition-colors hover:text-primary ${
-                pathname === item.href ? "text-primary" : "text-muted-foreground"
+                pathname === item.href
+                  ? "text-primary"
+                  : "text-muted-foreground"
               }`}
             >
               {item.label}
             </Link>
           ))}
-          
+
           <Button className="border-2 border-primary bg-transparent hover:bg-none">
-            <Link href={`/`}>Researcher Log In</Link>
+            <Link href={`/login`}>Design a survey</Link>
           </Button>
         </nav>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -51,7 +52,12 @@ export default function Navbar() {
           </SheetTrigger>
           <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-dark">
             <div className="flex justify-between items-center mb-4">
-            <Image src="/certo-logo.svg" alt="CERTO" width={100} height={100} />
+              <Image
+                src="/certo-logo.svg"
+                alt="CERTO"
+                width={100}
+                height={100}
+              />
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" aria-label="Close Menu">
                   <X className="h-5 w-5" />
@@ -71,7 +77,10 @@ export default function Navbar() {
                   {item.label}
                 </Link>
               ))}
-              <Button className="border-2 border-primary bg-transparent hover:bg-none" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button
+                className="border-2 border-primary bg-transparent hover:bg-none"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
                 World Coin
               </Button>
             </nav>
@@ -79,5 +88,5 @@ export default function Navbar() {
         </Sheet>
       </div>
     </header>
-  )
+  );
 }
