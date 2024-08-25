@@ -6,7 +6,6 @@ import "./globals.css";
 import Navbar from "./components/navbar/Navbar";
 import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
-import Header from "@/app/components/session/header";
 import { ThirdwebProvider } from "thirdweb/react";
 
 const inter = IBM_Plex_Mono({
@@ -32,7 +31,6 @@ export default function RootLayout({
         <SessionProvider session={session}>
           <body className={`bg-dark ${inter.className}`}>
             <Navbar />
-            <Header />
             {children}
           </body>
         </SessionProvider>
