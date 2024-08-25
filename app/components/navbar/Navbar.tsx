@@ -9,7 +9,7 @@ import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton } from "thirdweb/react";
-import { polygonAmoy } from "thirdweb/chains";
+import { polygon } from "thirdweb/chains";
 
 const client = createThirdwebClient({
   clientId: "989b407de9ce25994a3ba556785c54f6",
@@ -25,7 +25,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const loading = status === "loading";
-  
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-light/30 bg-black text-light">
@@ -48,7 +47,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          <ConnectButton client={client} chain={polygonAmoy} />
+          <ConnectButton client={client} chain={polygon} />
         </nav>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild className="md:hidden">

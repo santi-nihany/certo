@@ -1,28 +1,39 @@
 "use client";
 
-import { use, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { PlusIcon, TrashIcon } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { pushSurvey, Survey, Question } from '@/app/api/api'
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
-import { useActiveAccount } from 'thirdweb/react';
-
-
+import { use, useState } from "react";
+import { useRouter } from "next/navigation";
+import { PlusIcon, TrashIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { pushSurvey, Survey, Question } from "@/app/api/api";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
+import { useActiveAccount } from "thirdweb/react";
+import { createThirdwebClient } from "thirdweb";
+import { approveUSDC, createSurvey } from "@/app/api/survey";
 
 type QuestionType = "multipleChoice" | "checkbox";
 
 interface LocalQuestion {
-  text: string
-  type: QuestionType
-  options: string[]
-  is_ac: boolean
-  ac_correct?: string
+  text: string;
+  type: QuestionType;
+  options: string[];
+  is_ac: boolean;
+  ac_correct?: string;
 }
 
 interface SurveyParameters {
@@ -30,14 +41,18 @@ interface SurveyParameters {
     enabled: boolean;
     quota: string;
     reward: {
-      enabled: boolean
-      amount: string
-    }
-  }
-  worldId: 'required' | 'optional'
-  quarkId: 'required' | 'optional'
-  surveyEndDate: Date
+      enabled: boolean;
+      amount: string;
+    };
+  };
+  worldId: "required" | "optional";
+  quarkId: "required" | "optional";
+  surveyEndDate: Date;
 }
+
+const client = createThirdwebClient({
+  clientId: "989b407de9ce25994a3ba556785c54f6",
+});
 
 export default function CreateSurvey() {
   const router = useRouter();
@@ -57,24 +72,37 @@ export default function CreateSurvey() {
         amount: "",
       },
     },
-    worldId: 'optional',
-    quarkId: 'optional',
-    surveyEndDate: new Date()
-  })
+    worldId: "optional",
+    quarkId: "optional",
+    surveyEndDate: new Date(),
+  });
 
   const addQuestion = () => {
-    setQuestions([...questions, { text: '', type: 'multipleChoice', options: [''], is_ac: false, ac_correct:'' }])
-  }
+    setQuestions([
+      ...questions,
+      {
+        text: "",
+        type: "multipleChoice",
+        options: [""],
+        is_ac: false,
+        ac_correct: "",
+      },
+    ]);
+  };
 
   const removeQuestion = (index: number) => {
     setQuestions(questions.filter((_, i) => i !== index));
   };
 
-  const updateQuestion = (index: number, field: keyof LocalQuestion, value: any) => {
-    const updatedQuestions = [...questions]
-    updatedQuestions[index] = { ...updatedQuestions[index], [field]: value }
-    setQuestions(updatedQuestions)
-  }
+  const updateQuestion = (
+    index: number,
+    field: keyof LocalQuestion,
+    value: any
+  ) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[index] = { ...updatedQuestions[index], [field]: value };
+    setQuestions(updatedQuestions);
+  };
 
   const addOption = (questionIndex: number) => {
     const updatedQuestions = [...questions];
@@ -134,27 +162,47 @@ export default function CreateSurvey() {
       index,
       question: q.text,
       options: q.options,
-      multiple: q.type === 'checkbox',
+      multiple: q.type === "checkbox",
       is_ac: q.is_ac,
-      ac_correct: q.ac_correct
-    }))
+      ac_correct: q.ac_correct,
+    }));
 
     // Construct the new survey object
     const newSurvey: Survey = {
-        name: title,
-        description,
-        owner: account?.address,  // Replace with actual owner ID
-        prize: parameters.participantQuota.reward.enabled ? parseFloat(parameters.participantQuota.reward.amount) : 0,
-        timeLimit: parameters.surveyEndDate,  // Set this if you have a specific time limit in mind
-        maxAmount: parseInt(parameters.participantQuota.quota) || 0,
-        minAmount: 0,  // Set this if applicable
-        questions: backendQuestions,
-        requirements, 
-        created_at: new Date(),
-        segmentation: segmentations // Add the segmentations
-    }
+      name: title,
+      description,
+      owner: account?.address, // Replace with actual owner ID
+      prize: parameters.participantQuota.reward.enabled
+        ? parseFloat(parameters.participantQuota.reward.amount)
+        : 0,
+      timeLimit: new Date(parameters.surveyEndDate), // Set this if you have a specific time limit in mind
+      maxAmount: parseInt(parameters.participantQuota.quota) || 0,
+      minAmount: 1, // Set this if applicable
+      questions: backendQuestions,
+      requirements,
+      created_at: new Date(),
+      segmentation: segmentations, // Add the segmentations
+    };
 
+    console.log(
+      client,
+      account,
+      newSurvey.prize * 1e18,
+      newSurvey.minAmount,
+      newSurvey.maxAmount,
+      Math.floor(newSurvey.timeLimit.getTime() / 1000)
+    );
     try {
+      // await approveUSDC(client, account, newSurvey.prize * 1e18);
+      // await createSurvey(
+      //   client,
+      //   account,
+      //   newSurvey.prize * 1e18,
+      //   newSurvey.minAmount,
+      //   newSurvey.maxAmount,
+      //   Math.floor(newSurvey.timeLimit.getTime() / 1000)
+      // );
+
       // Push the survey to the backend
       await pushSurvey(newSurvey);
 
@@ -195,16 +243,18 @@ export default function CreateSurvey() {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Survey Parameters</h2>
             <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="SurveyEndDate">Survey End Date</Label>
-              <Input
-                id="SurveyEndDate"
-                type="date"
-                value={parameters.surveyEndDate}
-                onChange={(e) => updateParameters('surveyEndDate', e.target.value)}
-                className="w-30"
-              />
-            </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="SurveyEndDate">Survey End Date</Label>
+                <Input
+                  id="SurveyEndDate"
+                  type="date"
+                  value={parameters.surveyEndDate}
+                  onChange={(e) =>
+                    updateParameters("surveyEndDate", e.target.value)
+                  }
+                  className="w-30"
+                />
+              </div>
 
               <div className="flex items-center justify-between">
                 <Label htmlFor="participantQuota">Participant Quota</Label>
@@ -342,7 +392,10 @@ export default function CreateSurvey() {
           <div className="space-y-4">
             <Label>Questions</Label>
             {questions.map((question, questionIndex) => (
-              <div key={questionIndex} className="bg-gray-50 p-4 rounded-md space-y-2 relative">
+              <div
+                key={questionIndex}
+                className="bg-gray-50 p-4 rounded-md space-y-2 relative"
+              >
                 <div className="flex items-center space-x-2">
                   <Input
                     value={question.text}
@@ -380,14 +433,23 @@ export default function CreateSurvey() {
                 </div>
                 <div className="pl-4 space-y-2">
                   {question.options.map((option, optionIndex) => (
-                    <div key={optionIndex} className="flex items-center space-x-2">
+                    <div
+                      key={optionIndex}
+                      className="flex items-center space-x-2"
+                    >
                       {question.is_ac && (
                         <input
                           type="radio"
                           name={`ac_correct_${questionIndex}`}
                           value={option}
                           checked={question.ac_correct === option}
-                          onChange={(e) => updateQuestion(questionIndex, 'ac_correct', e.target.value)}
+                          onChange={(e) =>
+                            updateQuestion(
+                              questionIndex,
+                              "ac_correct",
+                              e.target.value
+                            )
+                          }
                         />
                       )}
                       <Input
@@ -430,13 +492,21 @@ export default function CreateSurvey() {
                           <input
                             type="checkbox"
                             checked={question.is_ac}
-                            onChange={(e) => updateQuestion(questionIndex, 'is_ac', e.target.checked)}
+                            onChange={(e) =>
+                              updateQuestion(
+                                questionIndex,
+                                "is_ac",
+                                e.target.checked
+                              )
+                            }
                           />
                           <span>Is attention check</span>
                         </Label>
                       </TooltipTrigger>
                       <TooltipContent side="top">
-                        Adding an attention check question can help ensure the quality of responses by identifying inattentive participants.
+                        Adding an attention check question can help ensure the
+                        quality of responses by identifying inattentive
+                        participants.
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
