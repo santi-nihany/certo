@@ -29,7 +29,7 @@ export default function Header() {
                   signIn("worldcoin"); // worldcoin es el único proveedor
                 }}
               >
-                Sign in
+                Prove you are a human
               </button>
             </p>
           )}

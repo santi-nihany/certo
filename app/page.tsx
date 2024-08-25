@@ -44,13 +44,13 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center text-sm m-10 p-10 h-full">
           Made with love by Pato, Bauti, Pedro, Santi and Luz.
           <Button className="m-5 bg-primary text-black hover:bg-black hover:border-2 hover:border-primary hover:text-primary">
-            <a
+            <Link
               href="https://github.com/santi-nihany/certo/tree/main"
               className="flex items-center"
             >
               <FontAwesomeIcon icon={faGithub} className="mr-2 w-5" />
               View on GitHub
-            </a>
+            </Link>
           </Button>
         </div>
       </div>

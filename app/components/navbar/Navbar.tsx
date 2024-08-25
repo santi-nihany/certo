@@ -25,6 +25,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const loading = status === "loading";
+  
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-light/30 bg-black text-light">
