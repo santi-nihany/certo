@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react'
+import { use, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PlusIcon, TrashIcon } from 'lucide-react'
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { pushSurvey, Survey, Question } from '@/app/api/api'
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip"
+import { useActiveAccount } from 'thirdweb/react';
+
 
 
 type QuestionType = "multipleChoice" | "checkbox";
@@ -35,11 +37,11 @@ interface SurveyParameters {
   worldId: 'required' | 'optional'
   quarkId: 'required' | 'optional'
   surveyEndDate: Date
-
 }
 
 export default function CreateSurvey() {
   const router = useRouter();
+  const account = useActiveAccount();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<LocalQuestion[]>([
@@ -141,7 +143,7 @@ export default function CreateSurvey() {
     const newSurvey: Survey = {
         name: title,
         description,
-        owner: 'owner-id',  // Replace with actual owner ID
+        owner: account?.address,  // Replace with actual owner ID
         prize: parameters.participantQuota.reward.enabled ? parseFloat(parameters.participantQuota.reward.amount) : 0,
         timeLimit: parameters.surveyEndDate,  // Set this if you have a specific time limit in mind
         maxAmount: parseInt(parameters.participantQuota.quota) || 0,

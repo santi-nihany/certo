@@ -10,7 +10,7 @@ export type Survey = {
   id?: UUID;
   name: string;
   description: string;
-  owner: string;
+  owner?: string;
   prize: number;
   ipfs?: string;
   timeLimit: Date;
@@ -60,6 +60,7 @@ export const pushSurvey = async (survey: Survey): Promise<Survey> => {
   if (error) throw Error(error.message);
   return data[0] as Survey;
 };
+
 export const getAnswers = async (surveyId: UUID): Promise<Answer[]> => {
   const { data, error } = await supabase.from("answers").select();
   if (error) throw Error(error.message);
