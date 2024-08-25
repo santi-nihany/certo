@@ -34,6 +34,7 @@ export type Question = {
   question: string
   options: string[]
   multiple: boolean
+  is_ac: boolean
 }
 
 export type Answer = {
