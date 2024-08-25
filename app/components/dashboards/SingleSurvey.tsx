@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
-import { pushAnswer, Answer } from '@/api/api'
+import { pushAnswer, Answer } from '@/app/api/api'
 
 export default function SingleSurvey({ survey }) {
   const [responses, setResponses] = useState<{ [key: string]: string | string[] }>({})

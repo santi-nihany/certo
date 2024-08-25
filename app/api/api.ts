@@ -31,6 +31,7 @@ export type Answer = {
   id?: UUID
   survey_id: UUID
   data: { index: number, answers: string[] }[]
+  amount?: number
 }
 
 export const getAllSurveys = async (): Promise<Survey[]> => {
@@ -47,7 +48,6 @@ export const getSurvey = async (id: UUID): Promise<Survey> => {
     .select()
     .eq('id', id.toString())
   if (error) throw Error(error.message)
-    console.log(data)
   return data[0] as Survey
 }
 
@@ -66,7 +66,7 @@ export const getAnswers = async (surveyId: UUID): Promise<Answer[]> => {
   if (error) throw Error(error.message)
   const answers = (data) as Answer[]
   // todo fix
-  return answers.filter(a => a.survey_id == surveyId)
+  return answers as Answer[]
 }
 
 export const pushAnswer = async (answer: Answer): Promise<Answer> => {
