@@ -2,7 +2,7 @@
 <img src="readme/banner.png" alt="Banner" width="100%" height="100%"/>
 </div>
 
-# Science... well, basically science sucks
+# Science... well, basically the way we do science -sometimes- sucks
 
 I mean, not really, we love science... But, scientific research often faces challenges due to inconsistencies in data, making findings difficult to replicate. Researchers struggle to identify participants who meet specific criteria, and online surveys are increasingly vulnerable to being overrun by bots, leading to unreliable results. This results in:
 
